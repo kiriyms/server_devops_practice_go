@@ -3,6 +3,7 @@ package common
 import (
 	"log"
 	"os"
+	"sync"
 
 	"github.com/joho/godotenv"
 )
@@ -13,7 +14,17 @@ type Config struct {
 	Environment string
 }
 
-func MustLoadConfig() *Config {
+var (
+	cfg     *Config
+	onceCfg sync.Once
+)
+
+const (
+	EnvDevelopment = "development"
+	EnvProduction  = "production"
+)
+
+func MustLoadConfig() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file: ", err)
@@ -34,9 +45,18 @@ func MustLoadConfig() *Config {
 		log.Fatal("ENVIRONMENT environment variable missing")
 	}
 
-	return &Config{
-		Address:     address,
-		Port:        port,
-		Environment: env,
+	onceCfg.Do(func() {
+		cfg = &Config{
+			Address:     address,
+			Port:        port,
+			Environment: env,
+		}
+	})
+}
+
+func GetConfig() *Config {
+	if cfg == nil {
+		panic("Global config not initialized. Call MustLoadConfig() first.")
 	}
+	return cfg
 }

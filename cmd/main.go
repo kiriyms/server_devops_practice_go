@@ -4,20 +4,24 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"os"
 
 	"github.com/kiriyms/server_devops_practice_go/common"
 	"github.com/kiriyms/server_devops_practice_go/handlers"
 )
 
 func main() {
-	config := common.MustLoadConfig()
-	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+	common.MustLoadConfig()
+	common.LoadLogger()
+	cfg := common.GetConfig()
+
+	slog.Info("Config loaded.")
+	slog.Info("Logger loaded.", slog.String("env", cfg.Environment))
+	slog.Debug("Debug logs enabled.")
+
 	mux := http.NewServeMux()
+	mux.Handle("/", handlers.NewVisitorHandler())
 
-	mux.Handle("/", Logger(handlers.NewVisitorHandler()))
-
-	addr := fmt.Sprintf("%s:%s", config.Address, config.Port)
-	logger.Info("Server is running", slog.String("address", "http://"+addr))
+	addr := fmt.Sprintf("%s:%s", cfg.Address, cfg.Port)
+	slog.Info("Server is running.", slog.String("addr", "http://"+addr))
 	http.ListenAndServe(addr, mux)
 }
