@@ -19,18 +19,19 @@ func MustLoadConfig() *Config {
 		log.Fatal("Error loading .env file: ", err)
 	}
 
-	var ok bool
-	var address string
-	if address, ok = os.LookupEnv("ADDRESS"); !ok {
-		log.Fatal("ADDRESS environment varriable missing")
+	address, ok := os.LookupEnv("ADDRESS")
+	if !ok {
+		log.Fatal("ADDRESS environment variable missing")
 	}
-	var port string
-	if port, ok = os.LookupEnv("PORT"); !ok {
-		log.Fatal("PORT environment varriable missing")
+
+	port, ok := os.LookupEnv("PORT")
+	if !ok {
+		log.Fatal("PORT environment variable missing")
 	}
-	var env string
-	if env, ok = os.LookupEnv("ENVIRONMENT"); !ok {
-		log.Fatal("ENVIRONMENT environment varriable missing")
+
+	env, ok := os.LookupEnv("ENVIRONMENT")
+	if !ok {
+		log.Fatal("ENVIRONMENT environment variable missing")
 	}
 
 	return &Config{
