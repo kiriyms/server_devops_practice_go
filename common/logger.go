@@ -20,6 +20,7 @@ func LoadLogger() {
 	switch cfg.Environment {
 	case EnvDevelopment:
 		logOpts.Level = slog.LevelDebug
+		logOpts.AddSource = true
 		logHandler = slog.NewTextHandler(os.Stdout, &logOpts)
 	case EnvProduction:
 		logOpts.Level = slog.LevelInfo
@@ -38,7 +39,7 @@ func LoadLogger() {
 
 func GetLogger() *slog.Logger {
 	if logger == nil {
-		panic("Global logger not initialized. Call LoadSlogger() first.")
+		panic("Global logger not initialized. Call LoadLogger() first.")
 	}
 	return logger
 }

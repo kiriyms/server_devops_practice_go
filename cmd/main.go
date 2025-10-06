@@ -7,6 +7,7 @@ import (
 
 	"github.com/kiriyms/server_devops_practice_go/common"
 	"github.com/kiriyms/server_devops_practice_go/handlers"
+	"github.com/kiriyms/server_devops_practice_go/services"
 )
 
 func main() {
@@ -19,7 +20,9 @@ func main() {
 	slog.Debug("Debug logs enabled.")
 
 	mux := http.NewServeMux()
-	mux.Handle("/", handlers.NewVisitorHandler())
+	mux.Handle("/", handlers.NewHandler(
+		services.NewLoggingService(
+			services.NewGreeter())))
 
 	addr := fmt.Sprintf("%s:%s", cfg.Address, cfg.Port)
 	slog.Info("Server is running.", slog.String("addr", "http://"+addr))

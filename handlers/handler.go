@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/kiriyms/server_devops_practice_go/common"
+	"github.com/kiriyms/server_devops_practice_go/services"
 )
 
 type JSONResponse struct {
@@ -14,16 +14,19 @@ type JSONResponse struct {
 	VisitorCount int    `json:"visitorCount"`
 }
 
-type VisitorHandler struct {
+type Handler struct {
+	svc   services.Service
 	count int
 	mu    sync.Mutex
 }
 
-func NewVisitorHandler() *VisitorHandler {
-	return &VisitorHandler{}
+func NewHandler(service services.Service) *Handler {
+	return &Handler{
+		svc: service,
+	}
 }
 
-func (h *VisitorHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		http.NotFound(w, r)
 		return
@@ -36,9 +39,14 @@ func (h *VisitorHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	userId := common.GetUserId()
+	msg, err := h.svc.Greet(r.Context())
+	if err != nil {
+		http.Error(w, fmt.Sprintf(`{"error": "%v"}`, err), http.StatusInternalServerError)
+		return
+	}
+
 	response := JSONResponse{
-		Msg:          fmt.Sprintf("Hello, user %s!", userId),
+		Msg:          msg,
 		VisitorCount: visitorCount,
 	}
 
