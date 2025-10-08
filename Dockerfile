@@ -1,26 +1,45 @@
-# Start from the official Go image
+# ---------- Stage 1: Build ----------
 FROM golang:1.25.1-alpine3.21 AS builder
 
+# Install CA certificates (needed if go mod downloads via HTTPS)
+RUN apk add --no-cache ca-certificates git
+
+# Set working directory
 WORKDIR /app
 
-# Copy go.mod first for caching dependencies
-COPY go.mod ./
+# Copy go.mod and go.sum first for dependency caching
+COPY go.mod go.sum ./
+
+# Download dependencies
 RUN go mod download
 
-# Copy the source code
+# Copy source code
 COPY . .
 
-# Build the Go app
-RUN go build -o server ./cmd
+# Build static binary (disable cgo)
+RUN CGO_ENABLED=0 GOOS=linux go build -o server ./cmd
 
-# Use a minimal image for running
-FROM alpine:latest
+# ---------- Stage 2: Runtime ----------
+FROM alpine:3.21
 
+# Add CA certificates for HTTPS
+RUN apk add --no-cache ca-certificates
+
+# Create a non-root user for security
+RUN addgroup -S app && adduser -S app -G app
+USER app
+
+# Set working directory
 WORKDIR /app
 
-# Copy the built binary from builder
+# Copy built binary from builder
 COPY --from=builder /app/server .
 
+# Copy the production .prod.env file as .env
+COPY .prod.env ./.env
+
+# Expose the port the server listens on
 EXPOSE 8080
 
-CMD ["./server"]
+# Run the binary
+ENTRYPOINT ["./server"]

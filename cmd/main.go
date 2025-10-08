@@ -19,8 +19,14 @@ func main() {
 	slog.Info("Logger loaded.", slog.String("env", cfg.Environment))
 	slog.Debug("Debug logs enabled.")
 
+	service := services.NewGreeter()
+	loggedService := services.NewLoggingService(service)
+
+	handler := handlers.NewHandler(loggedService)
+	loggedHandler := handlers.NewLoggingHandler(handler)
+
 	mux := http.NewServeMux()
-	mux.Handle("/", handlers.NewLoggingHandler(handlers.NewHandler(services.NewLoggingService(services.NewGreeter()))))
+	mux.Handle("/", loggedHandler)
 
 	addr := fmt.Sprintf("%s:%s", cfg.Address, cfg.Port)
 	slog.Info("Server is running.", slog.String("addr", "http://"+addr))
