@@ -22,8 +22,7 @@ jobs:
 
       # Build and tag the Docker image
       - name: Build Docker image
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/server_devops_practice_go:latest .
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/server_devops_practice_go:latest .
 
       # Push image to Docker Hub
       - name: Push image to Docker Hub
