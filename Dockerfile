@@ -36,7 +36,7 @@ WORKDIR /app
 COPY --from=builder /app/server .
 
 # Copy the production .prod.env file as .env
-COPY .prod.env ./.env
+# COPY .prod.env ./.env
 
 # Expose the port the server listens on
 EXPOSE 8080

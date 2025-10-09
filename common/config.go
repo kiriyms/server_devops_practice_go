@@ -27,7 +27,12 @@ const (
 func MustLoadConfig() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file: ", err)
+		log.Printf("Failed to load .env file: %v; looking for variables in environment...\n", err)
+	}
+
+	env, ok := os.LookupEnv("ENVIRONMENT")
+	if !ok {
+		log.Fatal("ENVIRONMENT environment variable missing")
 	}
 
 	address, ok := os.LookupEnv("ADDRESS")
@@ -38,11 +43,6 @@ func MustLoadConfig() {
 	port, ok := os.LookupEnv("PORT")
 	if !ok {
 		log.Fatal("PORT environment variable missing")
-	}
-
-	env, ok := os.LookupEnv("ENVIRONMENT")
-	if !ok {
-		log.Fatal("ENVIRONMENT environment variable missing")
 	}
 
 	onceCfg.Do(func() {

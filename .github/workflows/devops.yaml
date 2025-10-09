@@ -1,0 +1,34 @@
+name: DevOps CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      # Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Build and tag the Docker image
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg ENVIRONMENT=${{ secrets.ENVIRONMENT }} \
+            --build-arg PORT=${{ secrets.PORT }} \
+            --build-arg ADDRESS=${{ secrets.ADDRESS }} \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/server_devops_practice_go:latest .
+
+      # Push image to Docker Hub
+      - name: Push image to Docker Hub
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/server_devops_practice_go:latest
