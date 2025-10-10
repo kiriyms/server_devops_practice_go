@@ -7,8 +7,8 @@ A small project to test out CI/CD & Deployment
 - HTTP server with a `/GET` endpoint
 - Dockerfile
 - Makefile
+- Github Actions (Docker image build on commit)
 
 ## To-do:
 
-- Github Actions (Docker image build on commit)
 - Deployment to VPS
