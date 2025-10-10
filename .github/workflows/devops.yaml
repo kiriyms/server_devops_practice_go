@@ -21,9 +21,27 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       # Build and tag the Docker image
-      - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/server_devops_practice_go:latest .
+      - name: Build Docker image with Git SHA and Date tags
+        run: |
+          GIT_SHA=$(git rev-parse --short HEAD)
+          DATE_TAG=$(date +'%Y-%m-%d')
+          IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/server_devops_practice_go
 
-      # Push image to Docker Hub
+          echo "GIT_SHA=$GIT_SHA"
+
+          echo "GIT_SHA=$GIT_SHA" >> $GITHUB_ENV
+          echo "DATE_TAG=$DATE_TAG" >> $GITHUB_ENV
+          echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+
+          echo "Building image: $IMAGE_NAME"
+          docker build \
+            --build-arg GIT_SHA=$GIT_SHA \
+            -t $IMAGE_NAME:latest \
+            -t $IMAGE_NAME:${DATE_TAG}_${GIT_SHA} .
+
+      # Push all tags to Docker Hub
       - name: Push image to Docker Hub
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/server_devops_practice_go:latest
+        run: |
+          IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/server_devops_practice_go
+          docker push $IMAGE_NAME:latest
+          docker push $IMAGE_NAME:${DATE_TAG}_${GIT_SHA}
