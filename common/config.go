@@ -27,7 +27,7 @@ const (
 func MustLoadConfig() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Printf("Failed to load .env file: %v; looking for variables in environment...\n", err)
+		log.Printf("Failed to load .env file: %v; will look for variables in the environment\n", err)
 	}
 
 	env, ok := os.LookupEnv("ENVIRONMENT")

@@ -10,13 +10,16 @@ import (
 	"github.com/kiriyms/server_devops_practice_go/services"
 )
 
+var commit string = "unknown"
+
 func main() {
 	common.MustLoadConfig()
 	common.LoadLogger()
 	cfg := common.GetConfig()
 
-	slog.Info("Config loaded.")
-	slog.Info("Logger loaded.", slog.String("env", cfg.Environment))
+	slog.Info("Config loaded")
+	slog.Info("Logger loaded", slog.String("env", cfg.Environment))
+	slog.Info("Build version", slog.String("commit", commit))
 	slog.Debug("Debug logs enabled.")
 
 	service := services.NewGreeter()

@@ -16,8 +16,16 @@ RUN go mod download
 # Copy source code
 COPY . .
 
+# Declare a build argument for Git SHA
+ARG GIT_SHA=unknown
+
+# Optional: print its value to verify during build
+RUN echo "Building with GIT_SHA=$GIT_SHA"
+
 # Build static binary (disable cgo)
-RUN CGO_ENABLED=0 GOOS=linux go build -o server ./cmd
+RUN CGO_ENABLED=0 GOOS=linux go build \
+    -ldflags="-X main.commit=$GIT_SHA" \
+    -o server ./cmd
 
 # ---------- Stage 2: Runtime ----------
 FROM alpine:3.21
