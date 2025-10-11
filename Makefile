@@ -7,5 +7,8 @@ build:
 test:
 	@go test -v ./...
 
-devops:
+devops.push:
 	@act push --secret-file .secrets
+
+devops.test:
+	@act -j test

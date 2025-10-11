@@ -8,6 +8,7 @@ A small project to test out CI/CD & Deployment
 - Dockerfile
 - Makefile
 - Github Actions (Docker image build on commit)
+- Tests
 
 ## To-do:
 
