@@ -7,6 +7,9 @@ build:
 test:
 	@go test -v ./...
 
+push:
+	@git push origin main
+
 devops.push:
 	@act push --secret-file .secrets
 
