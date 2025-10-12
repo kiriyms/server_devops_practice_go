@@ -9,7 +9,8 @@ A small project to test out CI/CD & Deployment
 - Makefile
 - Github Actions (Docker image build on commit)
 - Tests
+- Deployment to VPS
 
 ## To-do:
 
-- Deployment to VPS
+
