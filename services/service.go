@@ -18,5 +18,5 @@ func NewGreeter() *Greeter {
 
 func (g *Greeter) Greet(ctx context.Context) (string, error) {
 	uid := common.GetUserId()
-	return "Hello, user " + uid + "!", nil
+	return "Hallo, user " + uid + "!", nil
 }

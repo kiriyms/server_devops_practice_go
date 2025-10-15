@@ -14,7 +14,7 @@ func TestGreet(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	if !strings.HasPrefix(msg, "Hello, user ") {
+	if !strings.HasPrefix(msg, "Hallo, user ") {
 		t.Errorf("unexpected greeting format: %s", msg)
 	}
 

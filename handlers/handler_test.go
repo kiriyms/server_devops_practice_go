@@ -12,7 +12,7 @@ import (
 type mockService struct{}
 
 func (m *mockService) Greet(_ context.Context) (string, error) {
-	return "Hello, user test_123!", nil
+	return "Hallo, user test_123!", nil
 }
 
 func TestServeHTTP_Valid(t *testing.T) {
@@ -32,7 +32,7 @@ func TestServeHTTP_Valid(t *testing.T) {
 		t.Fatalf("failed to parse JSON: %v", err)
 	}
 
-	if resp.Msg != "Hello, user test_123!" {
+	if resp.Msg != "Hallo, user test_123!" {
 		t.Errorf("unexpected message: %s", resp.Msg)
 	}
 
