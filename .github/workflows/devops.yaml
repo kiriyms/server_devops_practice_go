@@ -78,13 +78,9 @@ jobs:
           password: ${{ secrets.VPS_PASSWORD }}
           script: |
             IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/server_devops_practice_go:latest
+            cd /root/${{ secrets.DEPLOY_PATH }}
             echo "${{ secrets.ENV_FILE }}" | tr -d '\r' > .env
-            docker pull $IMAGE
-            docker stop server_devops_practice_go || true
-            docker rm server_devops_practice_go || true
-            docker run -d \
-              --name server_devops_practice_go \
-              --env-file .env \
-              -p 8080:8080 \
-              $IMAGE
+            docker compose -f docker-compose.${{ secrets.SERVICE_NAME }}.yml pull
+            docker compose -f docker-compose.${{ secrets.SERVICE_NAME }}.yml up -d
+            docker system prune -f
             rm .env
